@@ -61,7 +61,7 @@ async def parse_html(html: str) -> list[dict]:
         results.append({
             'user_id': int(user_row.get('id', '').split('_')[-1]),
             'user_name': user_link.get_text(strip=True),
-            'text': txt,
+            'title': txt,
             'type': entry.get('class', ['', ''])[1].split('bx-calendar-color-')[1],
             'date_from': dates[0],
             'date_to': dates[1]

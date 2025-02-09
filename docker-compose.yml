@@ -1,0 +1,11 @@
+version: '2.4'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: ${PROJECT_PREFIX}_app
+    volumes:
+      - .:/app
+    restart: unless-stopped

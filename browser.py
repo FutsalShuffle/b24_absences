@@ -1,8 +1,8 @@
 from asyncio import sleep
-from typing import Dict, Any, List
+from typing import Any
 
 import playwright.async_api
-from playwright.async_api import async_playwright, Browser
+from playwright.async_api import async_playwright
 
 import helpers
 
