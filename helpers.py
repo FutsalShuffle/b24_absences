@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import calendar
 import datetime
 import re
@@ -17,7 +19,6 @@ async def parse_html(html: str) -> list[dict]:
         top = await extract_style_property(style, 'top')
         if top is not None:
             tops.append(top)
-
     if not tops:
         return []
     # Смотрим по порядку по top css свойству
@@ -56,6 +57,7 @@ async def parse_html(html: str) -> list[dict]:
         txt = entry.find('nobr').get_text(strip=True) if entry.find('nobr') else ''
         dates = await get_dates(txt)
         if dates[0] == '':
+            print('skipped ' + txt)
             continue
 
         results.append({
@@ -102,12 +104,18 @@ async def generate_monthly_timestamps(year: int) -> list[tuple[int, int]]:
 
 async def get_dates(text: str) -> list[str]:
     pattern = r'\((\d{2}\.\d{2}\.\d{4})\s*-\s*(\d{2}\.\d{2}\.\d{4})\)'
+    pattern_wt = r'(\d{2}\.\d{2}\.\d{4})\s+\d{2}:\d{2}:\d{2}\s*-\s*(\d{2}\.\d{2}\.\d{4})'
+
+    match = re.search(pattern_wt, text)
+    if match:
+        date1, date2 = match.groups()
+        return [date1, date2]
 
     match = re.search(pattern, text)
-
     if match:
         first_date = match.group(1)
         second_date = match.group(2)
 
         return [first_date, second_date]
+
     return ['', '']

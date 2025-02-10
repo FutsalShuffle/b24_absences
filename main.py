@@ -25,6 +25,7 @@ async def root(year=2025):
         os.getenv('BITRIX_PASSWORD'),
         int(year)
     )
-    calendarRepository.insert(data, int(year))
+    if data:
+        calendarRepository.insert(data, int(year))
 
     return data

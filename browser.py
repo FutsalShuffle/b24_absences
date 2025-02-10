@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from asyncio import sleep
 from typing import Any
 
@@ -18,7 +20,7 @@ class BrowserItem:
         if self.browser is not None:
             return self.browser
         pw = await async_playwright().start()
-        browser = await pw.chromium.launch(headless=False)
+        browser = await pw.chromium.launch(headless=True)
         self.browser = await browser.new_context()
 
         return self.browser
@@ -31,8 +33,11 @@ class BrowserItem:
         await page.goto(f"{self.base_url}/stream/")
         # Логин если нужно
         if "Войти в Битрикс24" in await page.title():
-            await page.locator("#login").fill(login)
-            await page.locator('.b24net-login-enter-form__continue-btn').click()
+            try:
+                await page.locator("#login").fill(login)
+                await page.locator('.b24net-login-enter-form__continue-btn').click()
+            except:
+                pass
             await sleep(1)
             await page.locator(".b24net-text-input__field").fill(pwd)
             await page.locator('.b24net-password-enter-form__continue-btn').click()
@@ -46,8 +51,11 @@ class BrowserItem:
                     await page.reload()
                 # Ждем что таблица js загрузится
                 await page.wait_for_selector(".bx-calendar-month-main-table", timeout=5000)
-                # какая-то проблема с постепенным отображением элементов
-                await sleep(0.5)
+                try:
+                    await page.wait_for_selector(".bx-calendar-entry", timeout=5000)
+                except:
+                    continue
+                # await page.screenshot(path=str(start_ts) + ".png")
                 tmp = await helpers.parse_html(await page.inner_html('body'))
                 for item in tmp:
                     if item['user_id'] not in result:
