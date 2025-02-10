@@ -104,6 +104,7 @@ async def generate_monthly_timestamps(year: int) -> list[tuple[int, int]]:
 
 async def get_dates(text: str) -> list[str]:
     pattern = r'\((\d{2}\.\d{2}\.\d{4})\s*-\s*(\d{2}\.\d{2}\.\d{4})\)'
+    #Почему-то в докере б24 отдает со временем даты 3:00:00, в некоторых случаях без.
     pattern_wt = r'(\d{2}\.\d{2}\.\d{4})\s+\d{2}:\d{2}:\d{2}\s*-\s*(\d{2}\.\d{2}\.\d{4})'
 
     match = re.search(pattern_wt, text)
