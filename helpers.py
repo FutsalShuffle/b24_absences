@@ -8,6 +8,21 @@ from bs4 import BeautifulSoup
 from collections import defaultdict
 
 
+async def parse_js(data: list[dict]) -> list[dict]:
+    result = []
+    for user in data:
+        for itemCalendar in user['DATA']:
+            if not itemCalendar.get('ID'):
+                continue
+
+            user_item = {'user_id': int(user['ID']), 'email': user['LOGIN'], 'date_from': itemCalendar.get('DATE_FROM'),
+                         'date_to': itemCalendar.get('DATE_TO'), 'type': itemCalendar.get('TYPE'),
+                         'name': itemCalendar.get('NAME'), 'id': int(itemCalendar.get('ID'))}
+
+            result.append(user_item)
+
+    return result
+
 async def parse_html(html: str) -> list[dict]:
     soup = BeautifulSoup(html, 'html.parser')
     user_rows = soup.select('tr[id^="bx_calendar_user_"]')

@@ -17,9 +17,9 @@ calendarRepository.create_table()
 
 @app.get("/calendar/{year}")
 async def root(year=2025):
-    existing = calendarRepository.get_list(int(year))
-    if existing is not None:
-        return json.loads(existing[1])
+    # existing = calendarRepository.get_list(int(year))
+    # if existing is not None:
+    #     return json.loads(existing[1])
     data = await browser.parse_bitrix_calendar(
         os.getenv('BITRIX_EMAIL'),
         os.getenv('BITRIX_PASSWORD'),

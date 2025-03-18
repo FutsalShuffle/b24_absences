@@ -20,7 +20,7 @@ class BrowserItem:
         if self.browser is not None:
             return self.browser
         pw = await async_playwright().start()
-        browser = await pw.chromium.launch(headless=True)
+        browser = await pw.chromium.launch(headless=False)
         self.browser = await browser.new_context()
 
         return self.browser
@@ -55,13 +55,24 @@ class BrowserItem:
                     await page.wait_for_selector(".bx-calendar-entry", timeout=5000)
                 except:
                     continue
+                # await sleep(1)
                 # await page.screenshot(path=str(start_ts) + ".png")
-                tmp = await helpers.parse_html(await page.inner_html('body'))
+                dt = await page.evaluate("""() => {
+                  return jsBXAC.DATA
+                }""")
+                # print(dt)
+                # print(dt[0]['ID'])
+                # await sleep(10)
+                # tmp = await helpers.parse_html(await page.inner_html('body'))
+                tmp = await helpers.parse_js(dt)
+                # группировка по user_id
                 for item in tmp:
                     if item['user_id'] not in result:
                         result[item['user_id']] = []
 
+                    # дубликаты убираем
                     if item not in result[item['user_id']]:
                         result[item['user_id']].append(item)
+
         await page.close()
         return result
