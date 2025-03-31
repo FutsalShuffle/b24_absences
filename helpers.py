@@ -23,6 +23,7 @@ async def parse_js(data: list[dict]) -> list[dict]:
 
     return result
 
+
 async def parse_html(html: str) -> list[dict]:
     soup = BeautifulSoup(html, 'html.parser')
     user_rows = soup.select('tr[id^="bx_calendar_user_"]')
